@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hy.dao.CheckItemDao">
+
+    <sql id="params">
+        <where>
+            <if test="queryString!=null">
+                code like "%"#{queryString} "%"
+                or name like "%" #{queryString} "%"
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insertOne" parameterType="CheckItem">
+        insert into t_checkitem(id,code,name,sex,age,price,type,remark,attention)
+        values(null,#{code},#{name},#{sex},#{age},#{price},#{type},#{remark},#{attention})
+    </insert>
+
+    <update id="updateOne">
+        update t_checkitem
+        set
+          code=#{code},
+          name=#{name},
+          sex=#{sex},
+          age=#{age},
+          price=#{price},
+          type=#{type},
+          remark=#{remark},
+          attention=#{attention}
+        where
+          id=#{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from t_checkitem where id=#{id}
+    </delete>
+
+    <select id="findAll" resultType="com.hy.pojo.CheckItem">
+        select * from t_checkitem 
+    </select>
+
+    <select id="findByPageBean" resultType="com.hy.pojo.CheckItem">
+        select * from t_checkitem
+        <include refid="params"/>
+        limit #{offset},#{pageSize}
+    </select>
+
+    <select id="countByParams" resultType="long">
+        select count(0) from t_checkitem
+        <include refid="params"/>
+    </select>
+
+    <resultMap id="checkGroupMap" type="CheckItem" autoMapping="true">
+        <id column="id" property="id"/>
+        <collection property="checkGroups" column="id" ofType="CheckGroup"
+                    select="com.hy.dao.CheckGroupDao.findCheckGroupByItemId"/>
+    </resultMap>
+
+    <select id="findCheckGroupById" parameterType="int" resultMap="checkGroupMap">
+        select * from t_checkitem
+        where id=#{id}
+    </select>
+
+    <select id="findByGroupId" resultType="com.hy.pojo.CheckItem">
+        select * from t_checkitem
+        where id in
+        (select checkitem_id from t_checkgroup_checkitem where checkgroup_id=#{id})
+    </select>
+
+
+</mapper>

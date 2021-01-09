@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hy.dao.CheckGroupDao">
+
+    <insert id="insertOne">
+        <selectKey resultType="int" keyProperty="id" keyColumn="id" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into t_checkgroup
+        values (null,#{code},#{name},#{helpCode},#{sex},#{remark},#{attention})
+    </insert>
+
+    <insert id="addCheckGroupCheckItem">
+            insert into t_checkgroup_checkitem
+            values (#{checkGroupId},#{checkitemId})
+    </insert>
+    <update id="updateOne">
+        update t_checkgroup
+          set
+                code=#{code},
+                name=#{name},
+                helpCode=#{helpCode},
+                sex=#{sex},
+                remark=#{remark},
+                attention=#{attention}
+          where  id=#{id}
+    </update>
+
+    <delete id="deleteAllRelation">
+          delete from t_checkgroup_checkitem
+          where  checkgroup_id=#{checkGroupId}
+    </delete>
+
+    <delete id="deleteOne">
+        delete from  t_checkgroup where id=#{id}
+    </delete>
+
+    <select id="findCheckGroupByItemId" resultType="com.hy.pojo.CheckGroup">
+        select * from t_checkgroup
+        where id in
+        (select checkgroup_id from t_checkgroup_checkitem where checkitem_id=#{id});
+    </select>
+
+    <select id="findPageByParam" resultType="com.hy.pojo.CheckGroup">
+        select * from t_checkgroup
+        <where>
+            <if test="queryString!=null ">
+                code like "%" #{queryString} "%" or name like "%" #{queryString} "%"
+            </if>
+        </where>
+    </select>
+
+    <!--<resultMap id="checkGroupMap" type="CheckGroup" autoMapping="true">-->
+        <!--<id column="id" property="id"/>-->
+        <!--<collection property="checkItems" column="id" ofType="CheckItem"-->
+                    <!--select="com.hy.dao.CheckItemDao.findByGroupId"/>-->
+    <!--</resultMap>-->
+
+    <select id="findById" resultType="com.hy.pojo.CheckGroup">
+        select * from t_checkgroup where id=#{id};
+    </select>
+
+    <select id="findCheckItemById" resultType="java.lang.Integer">
+        select checkitem_id from t_checkgroup_checkitem where checkgroup_id=#{id}
+    </select>
+
+    <select id="countByCheckGroupId" resultType="java.lang.Long">
+        select count(0) from t_setmeal_checkgroup where checkgroup_id=#{id}
+    </select>
+
+    <select id="findAll" resultType="com.hy.pojo.CheckGroup">
+        select * from t_checkgroup;
+    </select>
+
+
+</mapper>

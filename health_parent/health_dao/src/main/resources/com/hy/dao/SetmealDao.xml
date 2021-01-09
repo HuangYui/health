@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hy.dao.SetmealDao">
+
+    <insert id="insert">
+        <selectKey resultType="int" keyProperty="id" keyColumn="id" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into t_setmeal
+        values
+        (#{id},#{name},#{code},#{helpCode},#{sex},#{age},#{price},#{remark},#{attention},#{img})
+    </insert>
+
+    <insert id="insertSetmealCheckgroup">
+            insert into
+            t_setmeal_checkgroup
+            values (#{setmealId},#{checkgroupId})
+    </insert>
+
+    <update id="updateOne">
+        update t_setmeal
+        set
+        name=#{name},code=#{code},helpCode=#{helpCode},sex=#{sex},age=#{age},price=#{price},remark=#{remark},attention=#{attention},img=#{img}
+        where
+        id=#{id}
+    </update>
+
+    <delete id="deleteRelationship">
+        delete from t_setmeal_checkgroup
+        where setmeal_id=#{setmealId}
+    </delete>
+
+    <delete id="delete">
+        delete from t_setmeal
+        where id=#{id}
+    </delete>
+
+    <select id="findSetmealByParams" resultType="com.hy.pojo.Setmeal">
+        select * from t_setmeal
+        <where>
+            <if test="queryString!=null and queryString.length()>0">
+                code like "%" #{queryString} "%"
+                or name like "%" #{queryString} "%"
+                or helpCode like "%" #{queryString} "%"
+            </if>
+        </where>
+
+    </select>
+
+    <select id="findById" resultType="com.hy.pojo.Setmeal">
+        select * from t_setmeal
+        where id=#{id}
+    </select>
+
+    <select id="findCheckgroupIdsBySetmealId" resultType="java.lang.Integer">
+        select checkgroup_id
+        from t_setmeal_checkgroup
+        where setmeal_id=#{setmealId}
+    </select>
+    <select id="countUsedBySetmealId" resultType="java.lang.Long">
+        select count(0) from t_order
+        where setmeal_id=#{id}
+
+    </select>
+</mapper>
