@@ -8,6 +8,8 @@ import com.hy.entity.Result;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
+
 
 /**
  * @author HY
@@ -27,12 +29,17 @@ public class ExceptionController {
 
     @ExceptionHandler({BusinessException.class})
     public Result handleBusinessException(BusinessException e) {
-        return new Result(false,"业务异常");
+        return new Result(false,e.getMessage());
     }
 
     @ExceptionHandler({SysException.class})
     public Result handleSysException(SysException e) {
         return new Result(false,"系统异常");
+    }
+
+    @ExceptionHandler({IOException.class})
+    public Result handleIOException(IOException e) {
+        return new Result(false,e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
