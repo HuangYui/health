@@ -25,7 +25,6 @@ public class CommonController {
 
     @RequestMapping("/fileUpload")
     public Result fileUpload(MultipartFile imgFile) throws Exception {
-        FileUtils.init();
         //- 获取原有图片名称，截取到后缀名
         String originalFilename = imgFile.getOriginalFilename();
         String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
@@ -37,7 +36,6 @@ public class CommonController {
         Map map=new HashMap(16);
         map.put("domain",FileUtils.getUrl());
         map.put("fileName",fileName);
-        FileUtils.close();
         return new Result(true, MessageConstant.UPLOAD_SUCCESS,map);
     }
 }

@@ -49,8 +49,8 @@ public class CheckItemServiceImpl implements CheckItemService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteCheckItem(Integer id) {
         //删除前显示进行判断，查看当前检查项是否被检查组使用
-        CheckItem checkGroupById = checkItemDao.findCheckGroupById(id);
-        if (checkGroupById.getCheckGroups().size()!=0){
+        Long count = checkItemDao.countCheckItem(id);
+        if (count!=0){
             throw new InUseException("当前检查项被使用中");
         }
         checkItemDao.deleteById(id);
@@ -59,7 +59,7 @@ public class CheckItemServiceImpl implements CheckItemService {
     @Override
     public CheckItem findById(Integer id) {
         //可复用
-        CheckItem checkItem = checkItemDao.findCheckGroupById(id);
+        CheckItem checkItem = checkItemDao.findById(id);
         return checkItem;
     }
 

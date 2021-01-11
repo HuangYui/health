@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class Setmeal implements Serializable {
 
+
     private Integer id;
     private String name;
     private String code;

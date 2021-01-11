@@ -73,4 +73,17 @@ public interface SetmealDao {
      * @param id
      */
     void delete(Integer id);
+
+    /**
+     * 根据查询套餐详细信息
+     * @param id
+     * @return
+     */
+    Setmeal findDetailById(Integer id);
+
+    /**
+     * 获得所有被使用了的img与对应的id
+     * @return
+     */
+    List<String> findAllImg();
 }

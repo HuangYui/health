@@ -9,6 +9,7 @@ import com.hy.entity.PageResult;
 import com.hy.entity.QueryPageBean;
 import com.hy.pojo.Setmeal;
 import com.hy.service.SetmealService;
+import com.hy.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +43,9 @@ public class SetmealServiceImpl implements SetmealService {
 
     @Override
     public PageResult findByParams(QueryPageBean queryPageBean) {
-        PageHelper.startPage(queryPageBean.getCurrentPage(),queryPageBean.getPageSize());
+        if (queryPageBean!=null) {
+            PageHelper.startPage(queryPageBean.getCurrentPage(), queryPageBean.getPageSize());
+        }
         Page<Setmeal> page=setmealDao.findSetmealByParams(queryPageBean);
         return new PageResult(page.getTotal(),page);
     }
@@ -84,4 +87,19 @@ public class SetmealServiceImpl implements SetmealService {
         setmealDao.deleteRelationship(id);
         setmealDao.delete(id);
     }
+
+    @Override
+    public Setmeal findDetailById(Integer id) {
+        Setmeal detailById = setmealDao.findDetailById(id);
+        detailById.setImg(FileUtils.getUrl()+detailById.getImg());
+        return detailById;
+    }
+
+    @Override
+    public List<String> getImgKeyList() {
+
+        return setmealDao.findAllImg();
+    }
+
+
 }

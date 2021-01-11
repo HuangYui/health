@@ -57,9 +57,61 @@
         from t_setmeal_checkgroup
         where setmeal_id=#{setmealId}
     </select>
+
     <select id="countUsedBySetmealId" resultType="java.lang.Long">
         select count(0) from t_order
         where setmeal_id=#{id}
 
+    </select>
+
+    <resultMap id="detailMap" type="com.hy.pojo.Setmeal">
+        <id property="id" column="id"></id>
+        <result property="name" column="name"/>
+        <result property="code" column="code"/>
+        <result property="helpCode" column="helpCode"/>
+        <result property="sex" column="sex"/>
+        <result property="age" column="age"/>
+        <result property="price" column="price"/>
+        <result property="remark" column="remark"/>
+        <result property="attention" column="attention"/>
+        <result property="img" column="img"/>
+        <collection property="checkGroups" ofType="CheckGroup">
+            <id property="id" column="tcId"/>
+            <result property="name" column="tcName"/>
+            <result property="remark" column="tcRemark"/>
+            <collection property="checkItems" ofType="CheckItem">
+                <id property="id" column="tciId" />
+                <result property="name" column="tciName"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="findDetailById" resultMap="detailMap" parameterType="int">
+          select
+          ts.id,
+          ts.name,
+          ts.remark,
+          ts.sex,
+          ts.age,
+          ts.img,
+          tc.id tcId,
+          tc.name tcName,
+          tc.remark tcRemark,
+          tci.id tciId,
+          tci.name tciName
+          from t_setmeal ts,
+          t_setmeal_checkgroup tsc,
+          t_checkgroup tc ,
+          t_checkgroup_checkitem tcc,
+          t_checkitem tci
+          WHERE
+          ts.id=tsc.setmeal_id
+          and tc.id=tsc.checkgroup_id
+          and tc.id=tcc.checkgroup_id
+          and tci.id=tcc.checkitem_id
+          and ts.id=#{id}
+    </select>
+    <select id="findAllImg" resultType="java.lang.String">
+        select img from t_setmeal
     </select>
 </mapper>

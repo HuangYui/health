@@ -57,4 +57,16 @@ public interface SetmealService {
      * @throws InUseException
      */
     void delete(Integer id) throws InUseException;
+
+    /**
+     * 查询套餐详细
+     * @param id
+     * @return
+     */
+    Setmeal findDetailById(Integer id);
+
+    /**
+     * 查询所有被使用了的图片
+     */
+    List<String> getImgKeyList();
 }

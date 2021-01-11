@@ -52,21 +52,25 @@
         <include refid="params"/>
     </select>
 
-    <resultMap id="checkGroupMap" type="CheckItem" autoMapping="true">
-        <id column="id" property="id"/>
-        <collection property="checkGroups" column="id" ofType="CheckGroup"
-                    select="com.hy.dao.CheckGroupDao.findCheckGroupByItemId"/>
-    </resultMap>
+    <!--<resultMap id="checkGroupMap" type="CheckItem" autoMapping="true">-->
+        <!--<id column="id" property="id"/>-->
+        <!--<collection property="checkGroups" column="id" ofType="CheckGroup"-->
+                    <!--select="com.hy.dao.CheckGroupDao.findCheckGroupByItemId"/>-->
+    <!--</resultMap>-->
 
-    <select id="findCheckGroupById" parameterType="int" resultMap="checkGroupMap">
-        select * from t_checkitem
-        where id=#{id}
+    <select id="countCheckItem" parameterType="int" resultType="long">
+        select count(0) from t_checkgroup_checkitem
+        where checkitem_id=#{id}
     </select>
 
     <select id="findByGroupId" resultType="com.hy.pojo.CheckItem">
         select * from t_checkitem
         where id in
         (select checkitem_id from t_checkgroup_checkitem where checkgroup_id=#{id})
+    </select>
+    <select id="findById" resultType="com.hy.pojo.CheckItem">
+        select * from t_checkitem
+        where id = #{id};
     </select>
 
 

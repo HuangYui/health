@@ -17,7 +17,6 @@ public class CheckItem implements Serializable {
     private String type;//检查项类型，分为检查和检验两种类型
     private String remark;//项目说明
     private String attention;//注意事项
-    private List<CheckGroup> checkGroups;//一个检查项可以被多个检查组拥有
 
     public Integer getId() {
         return id;
@@ -91,27 +90,6 @@ public class CheckItem implements Serializable {
         this.type = type;
     }
 
-    public List<CheckGroup> getCheckGroups() {
-        return checkGroups;
-    }
 
-    public void setCheckGroups(List<CheckGroup> checkGroups) {
-        this.checkGroups = checkGroups;
-    }
 
-    @Override
-    public String toString() {
-        return "CheckItem{" +
-                "id=" + id +
-                ", code='" + code + '\'' +
-                ", name='" + name + '\'' +
-                ", sex='" + sex + '\'' +
-                ", age='" + age + '\'' +
-                ", price=" + price +
-                ", type='" + type + '\'' +
-                ", remark='" + remark + '\'' +
-                ", attention='" + attention + '\'' +
-                ", checkGroups=" + checkGroups +
-                '}';
-    }
 }

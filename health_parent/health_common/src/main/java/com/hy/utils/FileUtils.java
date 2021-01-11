@@ -2,13 +2,17 @@ package com.hy.utils;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
-import com.aliyun.oss.model.ObjectMetadata;
-import com.aliyun.oss.model.PutObjectRequest;
-import com.aliyun.oss.model.PutObjectResult;
+import com.aliyun.oss.model.*;
 import com.hy.CustomException.SysException;
+import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.io.*;
 import java.sql.Statement;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author HY
@@ -18,6 +22,9 @@ import java.sql.Statement;
  * Version 1.0
  */
 public class FileUtils {
+
+    private static   Logger logger=LoggerFactory.getLogger(FileUtils.class);
+
     // Endpoint以杭州为例，其它Region请按实际情况填写。
     private static String protocol ="http://";
     private static String endpoint = "oss-cn-shenzhen.aliyuncs.com";
@@ -28,14 +35,17 @@ public class FileUtils {
     private static String accessKeySecret = "NCLYMonKymS5aPmNKDfGK9ULjjg6Jw";
     private static OSS ossClient;
 
+    //返回仓库url
     public static String getUrl() {
         return protocol+bucketName+"."+endpoint+"/";
     }
 
+
+
     /**
      * 初始化
      */
-    public static void init() {
+    static  {
         ossClient = new OSSClientBuilder().build(protocol+endpoint, accessKeyId, accessKeySecret);
     }
     public static String upLoadFile(InputStream file, String fileName) {
@@ -112,4 +122,55 @@ public class FileUtils {
         // 关闭OSSClient。
         ossClient.shutdown();
     }
+
+    /**
+     * 创建模拟文件夹
+     *
+     * param ossClient oss连接
+     * param bucketName 存储空间
+     * param folder 模拟文件夹名如"qj_nanjing/"
+     * return 文件夹名
+     */
+    public static String createFolder(String bucketName, String folder) {
+        // 文件夹名
+        final String keySuffixWithSlash = folder;
+        // 判断文件夹是否存在，不存在则创建
+        if (!ossClient.doesObjectExist(bucketName, keySuffixWithSlash)) {
+            // 创建文件夹
+            ossClient.putObject(bucketName, keySuffixWithSlash, new ByteArrayInputStream(new byte[0]));
+            logger.info("创建文件夹成功");
+            // 得到文件夹名
+            OSSObject object = ossClient.getObject(bucketName, keySuffixWithSlash);
+            String fileDir = object.getKey();
+            return fileDir;
+        }
+        return keySuffixWithSlash;
+    }
+
+
+    /**
+     * 根据key删除OSS服务器上的文件
+     *
+     * param ossClient oss连接
+     * param bucketName 存储空间
+     * param folder 模拟文件夹名 如"qj_nanjing/"
+     * param key Bucket下的文件的路径名+文件名 如："upload/cake.jpg"
+     */
+    private static void deleteFile(String bucketName, String folder, String key) {
+        ossClient.deleteObject(bucketName, folder + key);
+        logger.info("删除" + bucketName + "下的文件" + folder + key + "成功");
+    }
+
+    public static void  deleteRootFile(String key) {
+        deleteFile(bucketName,"",key);
+    }
+
+    public static List<String> getFileList() {
+        // 列举文件。如果不设置KeyPrefix，则列举存储空间下的所有文件。如果设置KeyPrefix，则列举包含指定前缀的文件。
+        ObjectListing objectListing = ossClient.listObjects(bucketName);
+        List<OSSObjectSummary> sums = objectListing.getObjectSummaries();
+        return sums.stream().map(OSSObjectSummary::getKey).collect(Collectors.toList());
+    }
+
+
 }

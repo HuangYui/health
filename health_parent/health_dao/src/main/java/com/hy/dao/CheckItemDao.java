@@ -41,11 +41,11 @@ public interface CheckItemDao {
     Long countByParams(QueryPageBean queryPageBean);
 
     /**
-     * 根据检查项id查找包含的检查组
+     * 查看检查项是否被检查组使用
      * @param id
      * @return
      */
-    CheckItem findCheckGroupById(Integer id);
+    Long countCheckItem(Integer id);
 
     /**
      * 根据id删除检查项
@@ -66,4 +66,12 @@ public interface CheckItemDao {
      * @return
      */
     List<CheckItem> findByGroupId(Integer id);
+
+    /**
+     * 根据id查询检查组
+     * @param id
+     * @return
+     */
+    CheckItem findById(Integer id);
+
 }
