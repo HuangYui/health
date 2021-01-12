@@ -20,7 +20,7 @@ import java.util.List;
  * @DateTime 2021/1/11 20:42
  * Version 1.0
  */
-@Component
+//@Component
 public class CleanImgJob {
 
     protected Logger logger = LoggerFactory.getLogger(CleanImgJob.class);

@@ -8,9 +8,12 @@ import com.hy.entity.Result;
 import com.hy.pojo.Setmeal;
 import com.hy.service.SetmealService;
 import com.hy.utils.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,9 +33,16 @@ public class SetmealController {
     @Reference
     private SetmealService setmealService;
 
+    @Autowired
+    private JedisPool jedisPool;
+
     @RequestMapping("/add")
     public Result add(@RequestBody Setmeal setmeal,Integer[] checkgroupIds) {
-        setmealService.addOne(setmeal,checkgroupIds);
+        Integer integer = setmealService.addOne(setmeal, checkgroupIds);
+        Jedis jedis = jedisPool.getResource();
+        Double time= Double.valueOf(System.currentTimeMillis());
+        jedis.zadd("static_setmeal",time,integer.toString()+"|1|"+time);
+        jedis.close();
         return new Result(true, MessageConstant.ADD_SETMEAL_SUCCESS);
     }
 
@@ -70,12 +80,20 @@ public class SetmealController {
     @RequestMapping("/update")
     public Result update(@RequestBody Setmeal setmeal,Integer[] checkgroupIds) {
         setmealService.update(setmeal,checkgroupIds);
+        Jedis jedis = jedisPool.getResource();
+        Double time= Double.valueOf(System.currentTimeMillis());
+        jedis.zadd("static_setmeal",time,setmeal.getId()+"|1|"+time);
+        jedis.close();
         return new Result(true,"编辑套餐成功");
     }
 
     @RequestMapping("/delete")
     public Result delete(Integer id) {
         setmealService.delete(id);
+        Jedis jedis = jedisPool.getResource();
+        Double time= Double.valueOf(System.currentTimeMillis());
+        jedis.zadd("static_setmeal",time,id+"|0|"+time);
+        jedis.close();
         return new Result(true,"删除套餐成功");
     }
 }

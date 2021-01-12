@@ -18,6 +18,11 @@
     <task:annotation-driven />
     <!--任务调度线程池-->
     <bean class="org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler"/>
+    <!-- 集成dubbo -->
     <import resource="classpath:dubbo-config.xml"/>
+    <!-- 集成freemarker -->
+    <import resource="classpath:spring-freemarker.xml" />
+    <!-- 集成redis -->
+    <import resource="classpath:spring-redis.xml"/>
 </beans>
 

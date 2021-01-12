@@ -21,7 +21,7 @@ public interface SetmealService {
      * @param setmeal
      * @param checkgroupIds
      */
-    void addOne(Setmeal setmeal, Integer[] checkgroupIds);
+    Integer addOne(Setmeal setmeal, Integer[] checkgroupIds);
 
     /**
      * 分页查询
@@ -69,4 +69,10 @@ public interface SetmealService {
      * 查询所有被使用了的图片
      */
     List<String> getImgKeyList();
+
+    /**
+     * 查找所有套餐
+     * @return
+     */
+    List<Setmeal> findAll();
 }

@@ -99,19 +99,28 @@
           tc.remark tcRemark,
           tci.id tciId,
           tci.name tciName
-          from t_setmeal ts,
-          t_setmeal_checkgroup tsc,
-          t_checkgroup tc ,
-          t_checkgroup_checkitem tcc,
-          t_checkitem tci
+          from t_setmeal ts left join
+          t_setmeal_checkgroup tsc on ts.id=tsc.setmeal_id
+          left join t_checkgroup tc on tc.id=tsc.checkgroup_id
+          left join  t_checkgroup_checkitem tcc on tc.id=tcc.checkgroup_id
+          left join t_checkitem tci on tci.id=tcc.checkitem_id
           WHERE
-          ts.id=tsc.setmeal_id
-          and tc.id=tsc.checkgroup_id
-          and tc.id=tcc.checkgroup_id
-          and tci.id=tcc.checkitem_id
-          and ts.id=#{id}
+          ts.id=#{id}
     </select>
     <select id="findAllImg" resultType="java.lang.String">
         select img from t_setmeal
+    </select>
+    <select id="findAll" resultType="com.hy.pojo.Setmeal">
+        select IFNULL(id," ") id,
+        IFNULL(name," ") name,
+--         IFNULL(code," ") code,
+--         IFNULL(helpCode," ") helpCode,
+        IFNULL(sex," ") sex,
+        IFNULL(age," ") age,
+--         IFNULL(price," ") price,
+        IFNULL(remark," ") remark,
+--         IFNULL(attention," ") attention,
+        IFNULL(img," ") img  from t_setmeal
+--           select * from t_setmeal
     </select>
 </mapper>

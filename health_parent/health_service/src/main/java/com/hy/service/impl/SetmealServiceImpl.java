@@ -30,7 +30,7 @@ public class SetmealServiceImpl implements SetmealService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addOne(Setmeal setmeal, Integer[] checkgroupIds) {
+    public Integer addOne(Setmeal setmeal, Integer[] checkgroupIds) {
         //先新增套餐才有id
         setmealDao.insert(setmeal);
         //获得id
@@ -39,6 +39,7 @@ public class SetmealServiceImpl implements SetmealService {
         for (Integer checkgroupId : checkgroupIds) {
             setmealDao.insertSetmealCheckgroup(setmealId,checkgroupId);
         }
+        return setmealId;
     }
 
     @Override
@@ -99,6 +100,11 @@ public class SetmealServiceImpl implements SetmealService {
     public List<String> getImgKeyList() {
 
         return setmealDao.findAllImg();
+    }
+
+    @Override
+    public List<Setmeal> findAll() {
+        return setmealDao.findAll();
     }
 
 

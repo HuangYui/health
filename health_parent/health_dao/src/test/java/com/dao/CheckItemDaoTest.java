@@ -33,15 +33,7 @@ public class CheckItemDaoTest {
         checkItemDao= classPathXmlApplicationContext.getBean(CheckItemDao.class);
     }
 
-    @Test
-    public void testFindCheckGroupById() {
-        CheckItem checkItem = new CheckItemDaoTest().getCheckItem();
-        System.out.println(checkItem.getName());
-    }
 
-    public CheckItem getCheckItem() {
-        return checkItemDao.findCheckGroupById(85);
-    }
 
 
 }

@@ -86,4 +86,10 @@ public interface SetmealDao {
      * @return
      */
     List<String> findAllImg();
+
+    /**
+     * 查找所有套餐
+     * @return
+     */
+    List<Setmeal> findAll();
 }
